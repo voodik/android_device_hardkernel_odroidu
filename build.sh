@@ -107,8 +107,12 @@ function make_update_zip()
 
 	cp $KERN_DIR/zImage $TMP_OUT_DIR/update/
 	cp $TMP_OUT_DIR/system.img $TMP_OUT_DIR/update/
+	split -b 16M $TMP_OUT_DIR/update/system.img $TMP_OUT_DIR/update/system_
+	rm -rf $TMP_OUT_DIR/update/system.img
 	cp $OUT_DIR/userdata.img $TMP_OUT_DIR/update/
-	cp $OUT_DIR/cache.img $TMP_OUT_DIR/update/
+        split -b 16M $TMP_OUT_DIR/update/userdata.img $TMP_OUT_DIR/update/userdata_
+        rm -rf $TMP_OUT_DIR/update/userdata.img
+	cp $OUT_DIR/cache.img $TMP_OUT_DIR/update/cache_aa
 
 	if [ -f $TMP_OUT_DIR/update.zip ]
 	then
