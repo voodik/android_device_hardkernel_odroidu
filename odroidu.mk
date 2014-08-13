@@ -79,19 +79,12 @@ PRODUCT_PACKAGES += \
     e2fsck \
     setup_fs
 
-# GPS
-#PRODUCT_COPY_FILES += \
-#    $(LOCAL_PATH)/configs/gps.cer:system/etc/gps.cer \
-#    $(LOCAL_PATH)/configs/gps.conf:system/etc/gps.conf \
-#    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml
-
 # HW composer
 PRODUCT_PACKAGES += \
     gralloc.odroidu \
     hwcomposer.exynos4 \
     libfimg \
     libnetcmdiface \
-    libsecion \
     libsync
 
 # Keylayouts
@@ -104,7 +97,7 @@ PRODUCT_COPY_FILES += \
 
 # Lights
 PRODUCT_PACKAGES += \
-    lights.odroidu \
+    lights.odroidu
 
 # Media profile
 PRODUCT_COPY_FILES += \
@@ -115,10 +108,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
 
-# MFC API
-PRODUCT_PACKAGES += \
-    libsecmfcdecapi \
-    libsecmfcencapi
 
 
 # OMX
@@ -173,6 +162,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/usb3g/lib/gps.default.so:system/lib/hw/gps.default.so \
     $(LOCAL_PATH)/configs/init.gps.sh:system/etc/init.gps.sh
+
+#RT5370 module
+PRODUCT_COPY_FILES += \
+$(LOCAL_PATH)/usb3g/modules/rt5370sta.ko:system/lib/modules/rt5370sta.ko
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.gps=ttyUSB3 \
@@ -231,7 +224,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.opengles.version=131072 \
     debug.hwui.render_dirty_regions=false
-PRODUCT_TAGS += dalvik.gc.type-precise
+
+
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
@@ -239,6 +233,10 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi
 PRODUCT_CHARACTERISTICS := tablet
 
 # call dalvik heap config
-$(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
+$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-dalvik-heap.mk)
 
+# call hwui memory config
+$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
+
+PRODUCT_TAGS += dalvik.gc.type-precise
 
