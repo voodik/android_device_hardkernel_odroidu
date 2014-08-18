@@ -170,6 +170,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.gps=ttyUSB3 \
     ro.kernel.android.gps.speed=4800
 
+#Camera Hal props
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.hardkernel.camera.width=1280 \
+    ro.hardkernel.camera.height=720
+
 #Hardkernel
 PRODUCT_PACKAGES += \
 	OdroidUpdater \
