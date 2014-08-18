@@ -28,9 +28,7 @@ PRODUCT_COPY_FILES += \
         hardware/samsung_slsi/exynos4/lib/mali_ump/libMali.so:system/lib/libMali.so \
 	hardware/samsung_slsi/exynos4/lib/mali_ump/libMali.so:obj/lib/libMali.so \
 	hardware/samsung_slsi/exynos4/lib/mali_ump/libUMP.so:system/lib/libUMP.so \
-	hardware/samsung_slsi/exynos4/lib/mali_ump/libUMP.so:obj/lib/libUMP.so \
-	hardware/samsung_slsi/exynos4/lib/mali_ump/libion.so:system/lib/libion.so \
-	hardware/samsung_slsi/exynos4/lib/mali_ump/libion.so:obj/lib/libion.so	
+	hardware/samsung_slsi/exynos4/lib/mali_ump/libUMP.so:obj/lib/libUMP.so
 
 # Boot animation
 TARGET_SCREEN_HEIGHT := 1280
@@ -84,6 +82,7 @@ PRODUCT_PACKAGES += \
     gralloc.odroidu \
     hwcomposer.exynos4 \
     libfimg \
+    libsecion \
     libnetcmdiface \
     libsync
 
@@ -223,6 +222,7 @@ PRODUCT_COPY_FILES += \
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.opengles.version=131072 \
+    ro.bq.gpu_to_cpu_unsupported=1 \
     debug.hwui.render_dirty_regions=false
 
 
