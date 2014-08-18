@@ -169,6 +169,7 @@ ifeq ($(BOARD_WLAN_DEVICE), rtl819xxu)
     BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_rtl
     BOARD_HOSTAPD_DRIVER        := NL80211
     BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_rtl
+    BOARD_NO_APSME_ATTR		:= true
 
     WIFI_DRIVER_MODULE_NAME	:= "rtl8191su"
     WIFI_DRIVER_MODULE_PATH	:= "/system/lib/modules/rtl8191su.ko"
