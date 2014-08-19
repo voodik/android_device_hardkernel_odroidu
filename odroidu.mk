@@ -164,7 +164,8 @@ PRODUCT_COPY_FILES += \
 
 #RT5370 module
 PRODUCT_COPY_FILES += \
-$(LOCAL_PATH)/usb3g/modules/rt5370sta.ko:system/lib/modules/rt5370sta.ko
+$(LOCAL_PATH)/usb3g/modules/rt5370sta.ko:system/lib/modules/rt5370sta.ko \
+$(LOCAL_PATH)/configs/rt5370sta.cal:system/etc/firmware/rt5370sta.cal
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.gps=ttyUSB3 \
