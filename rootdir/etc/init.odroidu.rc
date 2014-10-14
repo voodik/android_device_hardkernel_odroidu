@@ -32,11 +32,6 @@ on init
 
 
      mkdir /efs 0771 radio system
-#    symlink /dev/block/mmcblk0p13 /dev/mbin0
-#    restorecon /dev/mbin0
-
-#    symlink /dev/block/mmcblk0p8 /dev/block/param
-
 #test
     chmod 0755 /sbin/healthd
 
@@ -46,11 +41,6 @@ on fs
     chmod 4755 /system/bin/pppd
 
 on post-fs
-    # Increase max readahead size to 256 KB
-    write /sys/block/mmcblk0/queue/read_ahead_kb 256
-    # for controlling write performance boosting
-    chown system radio /sys/block/mmcblk0/bkops_en
-    chmod 0664 /sys/block/mmcblk0/bkops_en
 
 on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
@@ -63,19 +53,6 @@ on post-fs-data
 
 # restore permissions for gps
     mkdir /data/system 0775 system system
-
-# Broadcom NFC
-    mkdir /data/bcmnfc 0700 nfc nfc
-    mkdir /data/bcmnfc/param 0700 nfc nfc
-
-    # DivX DRM
-    mkdir /efs/.files 0775
-    mkdir /efs/.files/.dx1 0775 media system
-    mkdir /efs/.files/.dm33 0775 media system
-    mkdir /efs/.files/.mp301 0775 media system
-
-# SEAndroid Restore context for efs files
-    restorecon_recursive /efs
 
 #-----------------------------------------------------------------------
 
@@ -94,14 +71,6 @@ on boot
 
     # 4.3 needs this
     chmod 0644 /proc/cmdline
-
-# Permissions for bluetooth
-    setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
-    chown bluetooth bluetooth ro.bt.bdaddr_path
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-
 
 # Permissions for backlight
     chown system system /sys/class/backlight/pwm-backlight.0/brightness
