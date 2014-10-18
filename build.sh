@@ -146,6 +146,10 @@ case "$BUILD_OPTION" in
         copy_root_2_system
 		make_update_zip
 		;;
+        update)
+        copy_root_2_system
+                make_update_zip
+                ;;
 	*)
         build_android
         copy_root_2_system
