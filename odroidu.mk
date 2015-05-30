@@ -64,10 +64,12 @@ PRODUCT_PACKAGES += \
 	tinyplay \
 	tinyrec
 
-
-# Camera
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/init.exynos.cam.sh:system/etc/init.exynos.cam.sh
+# wifi
+PRODUCT_PACKAGES += \
+        hostapd \
+        wpa_supplicant.conf \
+        dhcpcd.conf \
+        wpa_supplicant
 
 PRODUCT_PACKAGES += \
     camera.odroidu
@@ -89,9 +91,9 @@ PRODUCT_PACKAGES += \
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/idc/odroid-ts.idc:system/usr/idc/odroidxu-ts.idc \
-    $(LOCAL_PATH)/keylayout/odroid-ts.kl:system/usr/keylayout/odroidxu-ts.kl \
-    $(LOCAL_PATH)/keylayout/odroid-keypad.kl:system/usr/keylayout/odroidxu-keypad.kl
+    $(LOCAL_PATH)/idc/odroid-ts.idc:system/usr/idc/odroidu-ts.idc \
+    $(LOCAL_PATH)/keylayout/odroid-ts.kl:system/usr/keylayout/odroidu-ts.kl \
+    $(LOCAL_PATH)/keylayout/odroid-keypad.kl:system/usr/keylayout/odroid-keypad.kl
 
 
 
@@ -101,6 +103,10 @@ PRODUCT_PACKAGES += \
 
 # Media profile
 PRODUCT_COPY_FILES += \
+    frameworks/av/media/libstagefright/data/media_codecs_ffmpeg.xml:system/etc/media_codecs_ffmpeg.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml  \
     $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
     $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
 
@@ -125,7 +131,8 @@ PRODUCT_PACKAGES += \
 # Radio
 PRODUCT_PACKAGES += \
 	rild \
-	chat
+	chat \
+	mngblt
 
 # hwconvertor modules
 PRODUCT_PACKAGES += \
@@ -140,7 +147,6 @@ PRODUCT_COPY_FILES += \
 #USB 3g support
 PRODUCT_COPY_FILES += \
     vendor/cm/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml \
-    vendor/cm/prebuilt/common/etc/spn-conf.xml:system/etc/spn-conf.xml \
     $(LOCAL_PATH)/usb3g/etc/ppp/ip-down:system/etc/ppp/ip-down \
     $(LOCAL_PATH)/usb3g/etc/ppp/ip-up:system/etc/ppp/ip-up \
     $(LOCAL_PATH)/usb3g/etc/ppp/call-pppd:system/etc/ppp/call-pppd \
@@ -156,20 +162,28 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     rild.libpath=/system/lib/libril-rk29-dataonly.so \
-    ril.function.dataonly=1
+    ril.function.dataonly=1 \
+    ro.radio.noril=1 \
+    config.disable_bluetooth=true
 
 #USB GPS support
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/usb3g/lib/gps.default.so:system/lib/hw/gps.default.so \
     $(LOCAL_PATH)/configs/init.gps.sh:system/etc/init.gps.sh
 
+PRODUCT_PACKAGES += \
+    gps.odroidu
+
 #RT5370 module firmware
 PRODUCT_COPY_FILES += \
 $(LOCAL_PATH)/configs/rt2870.bin:system/etc/firmware/rt2870.bin
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.kernel.android.gps=ttyUSB3 \
-    ro.kernel.android.gps.speed=4800
+    ro.kernel.android.gps=ttyACM0 \
+    ro.kernel.android.gps.speed=9600 \
+    wlan.modname=rtl8192cu \
+    persist.service.bt.a2dp.sink=true \
+    ro.voodik.iccid=8991101200003204510
 
 #Camera Hal props
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -185,15 +199,13 @@ PRODUCT_PACKAGES += \
 
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.adb.secure=0 \
-    ro.secure=0 \
-    persist.sys.root_access=3
+    ro.secure=0
 
 
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mass_storage \
-    ro.sf.hdmirotation=0 \
+    persist.sys.usb.config=mtp \
     ro.kernel.android.checkjni=0 
 
 # Enable repeatable keys in CWM
@@ -205,7 +217,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.adb.secure=0 \
     ro.secure=0 \
-    persist.sys.root_access=3 \
     mouse.right.click=back \
     ro.rfkilldisabled=1 \
     wifi.interface=wlan0
@@ -217,6 +228,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
     frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardwardware.sensor.gyroscope.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
@@ -228,21 +240,20 @@ PRODUCT_COPY_FILES += \
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.opengles.version=131072 \
-    ro.bq.gpu_to_cpu_unsupported=1 \
     debug.hwui.render_dirty_regions=false
 
 
 # Device uses high-density artwork where available
-PRODUCT_AAPT_CONFIG := normal large tvdpi hdpi
-PRODUCT_AAPT_PREF_CONFIG := tvdpi
+RODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 PRODUCT_CHARACTERISTICS := tablet
 
 # call dalvik heap config
-$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-dalvik-heap.mk)
+$(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
 # call hwui memory config
-$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
+#$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 
