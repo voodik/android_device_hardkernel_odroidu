@@ -203,16 +203,34 @@ BOARD_SEPOLICY_DIRS += \
     device/hardkernel/odroidu/selinux
 
 BOARD_SEPOLICY_UNION += \
+    adbd.te \
+    bluetooth.te \
     device.te \
     domain.te \
     file.te \
     file_contexts \
+    gpsd.te \
+    healthd.te \
     init.te \
+    insmod.te \
+    kernel.te \
     mediaserver.te \
+    netd.te \
+    nfc.te \
     rild.te \
-    system.te \
+    platform_app.te \
+    sdcard.te \
+    servicemanager.te \
+    service_contexts \
+    surfaceflinger.te \
+    sysinit.te \
+    system_app.te \
+    system_server.te \
     ueventd.te \
-    wpa_supplicant.te
+    vold.te \
+    voodik.te \
+    wpa_supplicant.te \
+    zygote.te
 
 # Charging mode
 #BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
