@@ -2,7 +2,10 @@ import init.odroidu.usb.rc
 import init.odroidu.wifi.rc
 
 on init
+    mkdir /persist 0771 system system
     mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /mnt/shell/container 0700 system system
+    mkdir /storage 0550 system sdcard_r
     mkdir /storage/emulated 0555 root root
     mkdir /storage/sdcard0/.android_secure 0775 system system
 
@@ -32,13 +35,10 @@ on init
 
 
      mkdir /efs 0771 radio system
-#test
-    chmod 0755 /sbin/healthd
 
 on fs
     mount_all /fstab.odroidu
     setprop ro.crypto.fuse_sdcard true
-    chmod 4755 /system/bin/pppd
 
 on post-fs
 
@@ -80,15 +80,21 @@ on boot
 # Service begin here
 
 
+service init_bltt /system/bin/mngblt
+    class core
+    user root
+    group root
+    oneshot
+
 # virtual sdcard daemon running as media_rw (1023)
 #service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
 #    class late_start
 
-service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard0 /storage/sdcard0
+service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/sdcard0 /storage/sdcard0
     class late_start
     disabled
 
-service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
     class late_start
     disabled
 
@@ -98,19 +104,22 @@ service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw
 
 service insmod_ax88179 /system/bin/insmod /system/lib/modules/ax88179_178a.ko
     class core
-    user root
-    group root
-    oneshot
-                
-service insmod_smsc95xx /system/bin/insmod /system/lib/modules/smsc95xx.ko    
-    class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
     oneshot
+                
+service insmod_smsc95xx /system/bin/insmod /system/lib/modules/smsc95xx.ko    
+    class core
+    seclabel u:r:insmod:s0
+    user root
+    group root
+    oneshot
 
 service insmod_ralink1 /system/bin/insmod /system/lib/modules/rt2x00lib.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -118,6 +127,7 @@ service insmod_ralink1 /system/bin/insmod /system/lib/modules/rt2x00lib.ko
 
 service insmod_ralink2 /system/bin/insmod /system/lib/modules/rt2x00usb.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -125,25 +135,22 @@ service insmod_ralink2 /system/bin/insmod /system/lib/modules/rt2x00usb.ko
 
 service insmod_ralink3 /system/bin/insmod /system/lib/modules/rt2800lib.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
     oneshot
 
-service uvc_usb_module /system/bin/insmod /system/lib/modules/uvcvideo.ko
-    class core
-    user root
-    group root
-    oneshot
-
 service insmod_vb2vmalc /system/bin/insmod /system/lib/modules/videobuf2-vmalloc.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     oneshot
 
 service insmod_saa7115 /system/bin/insmod /system/lib/modules/saa7115.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -151,6 +158,15 @@ service insmod_saa7115 /system/bin/insmod /system/lib/modules/saa7115.ko
 
 service insmod_stk1160 /system/bin/insmod /system/lib/modules/stk1160.ko
     class core
+    seclabel u:r:insmod:s0
+    user root
+    group root
+    disabled
+    oneshot
+
+service insmod_uvccam /system/bin/insmod /system/lib/modules/uvcvideo.ko
+    class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -158,12 +174,22 @@ service insmod_stk1160 /system/bin/insmod /system/lib/modules/stk1160.ko
 
 service insmod_usbmidi /system/bin/insmod /system/lib/modules/snd-usbmidi-lib.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     oneshot
 
 service insmod_usb_audio /system/bin/insmod /system/lib/modules/snd-usb-audio.ko
     class core
+    seclabel u:r:insmod:s0
+    user root
+    group root
+    disabled
+    oneshot
+
+service insmod_cdc_acm /system/bin/insmod /system/lib/modules/cdc-acm.ko
+    class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -171,6 +197,7 @@ service insmod_usb_audio /system/bin/insmod /system/lib/modules/snd-usb-audio.ko
 
 service insmod_pl2303 /system/bin/insmod /system/lib/modules/pl2303.ko
     class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -178,6 +205,15 @@ service insmod_pl2303 /system/bin/insmod /system/lib/modules/pl2303.ko
 
 service insmod_ftdi /system/bin/insmod /system/lib/modules/ftdi_sio.ko
     class core
+    seclabel u:r:insmod:s0
+    user root
+    group root
+    disabled
+    oneshot
+
+service insmod_cp210x /system/bin/insmod /system/lib/modules/cp210x.ko
+    class core
+    seclabel u:r:insmod:s0
     user root
     group root
     disabled
@@ -189,10 +225,14 @@ service gps_cfg /system/bin/sh /system/etc/init.gps.sh
     disabled
     oneshot
 
-on property:init.svc.insmod_ax88179=stopped
-    start insmod_smsc95xx
 
-on property:ro.hardkernel.wifi2=true
+on property:ro.radio.noril=1
+    stop ril-daemon
+
+on property:init.svc.insmod_smsc95xx=stopped
+    start insmod_ax88179
+
+on property:wlan.modname=rt2800usb
     start insmod_ralink1
 
 on property:init.svc.insmod_ralink1=stopped
@@ -206,6 +246,9 @@ on property:init.svc.insmod_vb2vmalc=stopped
 
 on property:init.svc.insmod_saa7115=stopped
     start insmod_stk1160
+
+on property:init.svc.insmod_stk1160=stopped
+    start insmod_uvccam
 
 on property:init.svc.insmod_usbmidi=stopped
     start insmod_usb_audio
@@ -239,17 +282,18 @@ service iprenew_eth1 /system/bin/dhcpcd -n
     oneshot
 
 on property:init.svc.bootanim=stopped
-#    # start gpsd late to prevent it from changing /data/system
+     start insmod_cdc_acm
      start insmod_pl2303
-#    start gpsd
-#    start camera_id
 
 on property:init.svc.insmod_pl2303=stopped
      start insmod_ftdi
 
 on property:init.svc.insmod_ftdi=stopped
+     start insmod_cp210x
+
+#on property:init.svc.insmod_cp210x=stopped
      #set usb gps speed
-     start gps_cfg
+#    start gps_cfg
 
 on property:ro.dumpstate.dmesg=1
     write /proc/sys/kernel/dmesg_restrict 0
