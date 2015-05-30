@@ -19,6 +19,7 @@ LOCAL_PATH := device/hardkernel/odroidu
 # Include path
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
+TARGET_BOOTANIMATION_PRELOAD := true
 
 # Architecture
 TARGET_CPU_ABI := armeabi-v7a
@@ -30,16 +31,28 @@ TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_CPU_VARIANT := cortex-a9
 ARCH_ARM_HAVE_NEON := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
-TARGET_GLOBAL_CFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
+
+# Board already specifies -mcpu, but it won't hurt to add mtune, too
+BOARD_GLOBAL_CFLAGS += -mtune=cortex-a9
+BOARD_GLOBAL_CPPFLAGS += -mtune=cortex-a9
+
+# Specify L1/L2 caches used for Exynos 4412
+BOARD_GLOBAL_CFLAGS += --param l1-cache-line-size=32 --param l1-cache-size=32 --param l2-cache-size=1024
+BOARD_GLOBAL_CPPFLAGS += --param l1-cache-line-size=32 --param l1-cache-size=32 --param l2-cache-size=1024
+
+# Hint the compiler that we're using quad-core CPU
+BOARD_GLOBAL_CFLAGS += -mvectorize-with-neon-quad
+BOARD_GLOBAL_CPPFLAGS += -mvectorize-with-neon-quad
 
 EXYNOS4X12_ENHANCEMENTS := true
 EXYNOS4_ENHANCEMENTS := true
+
 ifdef EXYNOS4X12_ENHANCEMENTS
 COMMON_GLOBAL_CFLAGS += -DEXYNOS4_ENHANCEMENTS
 COMMON_GLOBAL_CFLAGS += -DEXYNOS4X12_ENHANCEMENTS
 COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
 endif
+
 BOARD_VENDOR := samsung
 TARGET_BOARD_PLATFORM := exynos4
 TARGET_SOC := exynos4x12
@@ -74,8 +87,8 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/hardkernel/odroidu/bluetoo
 BOARD_BLUETOOTH_DOES_NOT_USE_RFKILL    	:= true
 
 # Boot animation
-TARGET_BOOTANIMATION_PRELOAD := true
-TARGET_BOOTANIMATION_TEXTURE_CACHE := true
+#TARGET_BOOTANIMATION_PRELOAD := true
+#TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 
 # Camera
 USE_SEC_CAMERA := false
@@ -133,6 +146,7 @@ BOARD_USES_MFC_FPS := false
 BOARD_USE_S3D_SUPPORT := false
 BOARD_USE_CSC_FIMC := false
 BOARD_USE_H264_PREPEND_SPS_PPS := true
+BOARD_CANT_REALLOCATE_OMX_BUFFERS := true
 
 # Enable V4L2 & ION
 BOARD_USE_V4L2 := false
@@ -142,10 +156,15 @@ DEFAULT_FB_NUM := 0
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 BOARD_EGL_CFG := $(LOCAL_PATH)/configs/egl.cfg
 USE_OPENGL_RENDERER := true
-BOARD_EGL_WORKAROUND_BUG_10194508 := true
+BOARD_USES_SKIAHWJPEG := true
+
+COMMON_GLOBAL_CFLAGS += -DSEC_HWJPEG_G2D -DWORKAROUND_BUG_10194508 -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL
+
 #TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 #BOARD_USE_BGRA_8888 := true
-TARGET_DISABLE_TRIPLE_BUFFERING := true
+#TARGET_DISABLE_TRIPLE_BUFFERING := true
+
+BOARD_USES_LEGACY_MMAP := true
 
 #
 # Wifi related defines
@@ -233,7 +252,5 @@ BOARD_SEPOLICY_UNION += \
     zygote.te
 
 # Charging mode
-#BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
-COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 BOARD_BATTERY_DEVICE_NAME := battery
 
