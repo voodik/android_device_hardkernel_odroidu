@@ -77,15 +77,19 @@ function copy_root_2_system()
 
     mv $TMP_OUT_DIR/system/init $TMP_OUT_DIR/system/bin/
     mv $TMP_OUT_DIR/system/sbin/adbd $TMP_OUT_DIR/system/bin/
+    mv $TMP_OUT_DIR/system/sbin/healthd $TMP_OUT_DIR/system/bin/
+    mv $TMP_OUT_DIR/system/sbin/mkfs.f2fs $TMP_OUT_DIR/system/bin/
     cd $TMP_OUT_DIR/system/
     ln -s bin/init init
     cd $TMP_OUT_DIR/system/sbin
     ln -s ../bin/adbd adbd
+    ln -s ../bin/healthd healthd
+    ln -s ../bin/mkfs.f2fs mkfs.f2fs
 
   	echo $SYSTEMIMAGE_PARTITION_SIZE
 
     find $TMP_OUT_DIR/system -name .svn | xargs rm -rf
-	$OUT_HOSTBIN_DIR/make_ext4fs -s -l $SYSTEMIMAGE_PARTITION_SIZE -a system $TMP_OUT_DIR/system.img $TMP_OUT_DIR/system
+	$OUT_HOSTBIN_DIR/make_ext4fs -S $TMP_OUT_DIR/system/file_contexts -s -l $SYSTEMIMAGE_PARTITION_SIZE -a system $TMP_OUT_DIR/system.img $TMP_OUT_DIR/system
 
 	sync
 }
@@ -113,6 +117,7 @@ function make_update_zip()
         split -b 16M $TMP_OUT_DIR/update/userdata.img $TMP_OUT_DIR/update/userdata_
         rm -rf $TMP_OUT_DIR/update/userdata.img
 	cp $OUT_DIR/cache.img $TMP_OUT_DIR/update/cache_aa
+	cp $ROOT_DIR/device/hardkernel/odroidu/bootloader/* $TMP_OUT_DIR/update/
 
 	if [ -f $TMP_OUT_DIR/update.zip ]
 	then
