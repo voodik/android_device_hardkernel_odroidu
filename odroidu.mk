@@ -87,7 +87,8 @@ PRODUCT_PACKAGES += \
     libfimg \
     libsecion \
     libnetcmdiface \
-    libsync
+    libsync \
+    libcec
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
