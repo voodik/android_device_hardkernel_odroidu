@@ -107,7 +107,6 @@ service insmod_ax88179 /system/bin/insmod /system/lib/modules/ax88179_178a.ko
     seclabel u:r:insmod:s0
     user root
     group root
-    disabled
     oneshot
                 
 service insmod_smsc95xx /system/bin/insmod /system/lib/modules/smsc95xx.ko    
@@ -115,6 +114,7 @@ service insmod_smsc95xx /system/bin/insmod /system/lib/modules/smsc95xx.ko
     seclabel u:r:insmod:s0
     user root
     group root
+    disabled
     oneshot
 
 service insmod_ralink1 /system/bin/insmod /system/lib/modules/rt2x00lib.ko
@@ -229,8 +229,8 @@ service gps_cfg /system/bin/sh /system/etc/init.gps.sh
 on property:ro.radio.noril=1
     stop ril-daemon
 
-on property:init.svc.insmod_smsc95xx=stopped
-    start insmod_ax88179
+on property:init.svc.insmod_ax88179=stopped
+    start insmod_smsc95xx
 
 on property:wlan.modname=rt2800usb
     start insmod_ralink1
