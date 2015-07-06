@@ -226,8 +226,8 @@ service gps_cfg /system/bin/sh /system/etc/init.gps.sh
     oneshot
 
 
-on property:ro.radio.noril=1
-    stop ril-daemon
+on property:ro.radio.noril=0
+    setprop rild.libpath "/system/lib/libril-rk29-dataonly.so"
 
 on property:init.svc.insmod_ax88179=stopped
     start insmod_smsc95xx
