@@ -103,7 +103,6 @@ PRODUCT_PACKAGES += \
 
 # Media profile
 PRODUCT_COPY_FILES += \
-    frameworks/av/media/libstagefright/data/media_codecs_ffmpeg.xml:system/etc/media_codecs_ffmpeg.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml  \
@@ -181,8 +180,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.gps=ttyACM0 \
     ro.kernel.android.gps.speed=9600 \
     wlan.modname=rtl8192cu \
-    persist.service.bt.a2dp.sink=true \
-    ro.voodik.iccid=8991101200003204510
+    persist.service.bt.a2dp.sink=true
 
 #Camera Hal props
 PRODUCT_PROPERTY_OVERRIDES += \
